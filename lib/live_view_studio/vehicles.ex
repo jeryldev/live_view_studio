@@ -1,5 +1,8 @@
 defmodule LiveViewStudio.Vehicles do
   def search(make_or_model) do
+    Process.sleep(4000)
+    make_or_model = String.upcase(make_or_model)
+
     list_vehicles()
     |> Enum.filter(
       &String.contains?(
