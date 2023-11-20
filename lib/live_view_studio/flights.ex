@@ -7,6 +7,16 @@ defmodule LiveViewStudio.Flights do
     |> Enum.filter(&(&1.origin == airport || &1.destination == airport))
   end
 
+  # def search_by_airport(airport) do
+  #   Process.sleep(4000)
+  #   airport = String.upcase(airport)
+
+  #   Enum.filter(list_flights(), fn flight ->
+  #     String.starts_with?(flight.origin, airport) ||
+  #       String.starts_with?(flight.destination, airport)
+  #   end)
+  # end
+
   def list_flights do
     [
       %{

@@ -38,6 +38,7 @@ defmodule LiveViewStudioWeb.LightLive do
           min="0"
           max="100"
           value={@brightness}
+          phx-debounce="250"
         />
       </form>
       <form phx-change="change-temp">
