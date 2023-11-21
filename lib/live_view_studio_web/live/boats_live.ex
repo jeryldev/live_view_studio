@@ -2,6 +2,8 @@ defmodule LiveViewStudioWeb.BoatsLive do
   use LiveViewStudioWeb, :live_view
 
   alias LiveViewStudio.Boats
+  # we can also use import here
+  alias LiveViewStudioWeb.CustomComponents
 
   def mount(_params, _session, socket) do
     socket =
@@ -16,12 +18,12 @@ defmodule LiveViewStudioWeb.BoatsLive do
   def render(assigns) do
     ~H"""
     <h1>Daily Boat Rentals</h1>
-    <.promo expiration={2}>
+    <CustomComponents.promo expiration={2}>
       Save 25% on rentals!
       <:legal>
         <Heroicons.exclamation_circle /> Limit 1 per party
       </:legal>
-    </.promo>
+    </CustomComponents.promo>
     <div id="boats">
       <form phx-change="filter">
         <div class="filters">
@@ -65,29 +67,9 @@ defmodule LiveViewStudioWeb.BoatsLive do
         </div>
       </div>
     </div>
-    <.promo>
+    <CustomComponents.promo>
       Hurry, only 3 boats left!
-    </.promo>
-    """
-  end
-
-  attr :expiration, :integer, default: 24
-  slot :legal
-  slot :inner_block, required: true
-
-  def promo(assigns) do
-    ~H"""
-    <div class="promo">
-      <div class="deal">
-        <%= render_slot(@inner_block) %>
-      </div>
-      <div class="expiration">
-        Deal expires in <%= @expiration %> hour(s)
-      </div>
-      <div class="legal">
-        <%= render_slot(@legal) %>
-      </div>
-    </div>
+    </CustomComponents.promo>
     """
   end
 
