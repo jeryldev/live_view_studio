@@ -27,22 +27,7 @@ defmodule LiveViewStudioWeb.BoatsLive do
     <div id="boats">
       <.filter_form filter={@filter} />
       <div class="boats">
-        <div :for={boat <- @boats} class="boat">
-          <img src={boat.image} />
-          <div class="content">
-            <div class="model">
-              <%= boat.model %>
-            </div>
-            <div class="details">
-              <span class="price">
-                <%= boat.price %>
-              </span>
-              <span class="type">
-                <%= boat.type %>
-              </span>
-            </div>
-          </div>
-        </div>
+        <.boat :for={boat <- @boats} boat={boat} />
       </div>
     </div>
     <CustomComponents.promo>
@@ -78,6 +63,29 @@ defmodule LiveViewStudioWeb.BoatsLive do
         </div>
       </div>
     </form>
+    """
+  end
+
+  attr :boat, LiveViewStudio.Boats.Boat, required: true
+
+  def boat(assigns) do
+    ~H"""
+    <div class="boat">
+      <img src={@boat.image} />
+      <div class="content">
+        <div class="model">
+          <%= @boat.model %>
+        </div>
+        <div class="details">
+          <span class="price">
+            <%= @boat.price %>
+          </span>
+          <span class="type">
+            <%= @boat.type %>
+          </span>
+        </div>
+      </div>
+    </div>
     """
   end
 
