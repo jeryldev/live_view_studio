@@ -2,8 +2,6 @@ defmodule LiveViewStudioWeb.BoatsLive do
   use LiveViewStudioWeb, :live_view
 
   alias LiveViewStudio.Boats
-  # we can also use import here
-  alias LiveViewStudioWeb.CustomComponents
 
   def mount(_params, _session, socket) do
     socket =
@@ -18,21 +16,21 @@ defmodule LiveViewStudioWeb.BoatsLive do
   def render(assigns) do
     ~H"""
     <h1>Daily Boat Rentals</h1>
-    <CustomComponents.promo expiration={2}>
+    <.promo expiration={2}>
       Save 25% on rentals!
       <:legal>
         <Heroicons.exclamation_circle /> Limit 1 per party
       </:legal>
-    </CustomComponents.promo>
+    </.promo>
     <div id="boats">
       <.filter_form filter={@filter} />
       <div class="boats">
         <.boat :for={boat <- @boats} boat={boat} />
       </div>
     </div>
-    <CustomComponents.promo>
+    <.promo>
       Hurry, only 3 boats left!
-    </CustomComponents.promo>
+    </.promo>
     """
   end
 

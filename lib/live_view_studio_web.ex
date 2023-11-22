@@ -86,6 +86,7 @@ defmodule LiveViewStudioWeb do
       # Core UI components and translation
       import LiveViewStudioWeb.CoreComponents
       import LiveViewStudioWeb.Gettext
+      import LiveViewStudioWeb.CustomComponents
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS
