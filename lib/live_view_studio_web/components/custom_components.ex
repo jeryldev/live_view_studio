@@ -7,6 +7,9 @@ defmodule LiveViewStudioWeb.CustomComponents do
   slot :inner_block, required: true
 
   def promo(assigns) do
+    # assigns = assign(assigns, :minutes, assigns.expiration * 60)
+    # assigns = assign_new(assigns, :minutes, fn -> assigns.expiration * 60 end)
+
     ~H"""
     <div class="promo">
       <div class="deal">
@@ -18,6 +21,7 @@ defmodule LiveViewStudioWeb.CustomComponents do
       <div class="legal">
         <%= render_slot(@legal) %>
       </div>
+      <%!-- <%= @minutes %> --%>
     </div>
     """
   end
