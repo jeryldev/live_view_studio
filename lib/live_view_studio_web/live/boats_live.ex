@@ -27,6 +27,7 @@ defmodule LiveViewStudioWeb.BoatsLive do
     <.badge label="released" />
     <.badge label="edited" class="bg-blue-300 font-bold" />
     <.badge label="filmed" id="status-filmed" phx-click="remove" />
+    <.icon name="hero-exclamation-circle" />
     <div id="boats">
       <.filter_form filter={@filter} />
       <div class="boats">
