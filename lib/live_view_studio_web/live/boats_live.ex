@@ -22,6 +22,11 @@ defmodule LiveViewStudioWeb.BoatsLive do
         <Heroicons.exclamation_circle /> Limit 1 per party
       </:legal>
     </.promo>
+    <.badge label="filmed" />
+    <.badge label="edited" />
+    <.badge label="released" />
+    <.badge label="edited" class="bg-blue-300 font-bold" />
+    <.badge label="filmed" id="status-filmed" phx-click="remove" />
     <div id="boats">
       <.filter_form filter={@filter} />
       <div class="boats">
