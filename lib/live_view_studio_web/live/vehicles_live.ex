@@ -42,7 +42,7 @@ defmodule LiveViewStudioWeb.VehiclesLive do
         </option>
       </datalist>
 
-      <div :if={@loading} class="loader">Loading...</div>
+      <.loading_indicator visible={@loading} />
 
       <div class="vehicles">
         <ul>
