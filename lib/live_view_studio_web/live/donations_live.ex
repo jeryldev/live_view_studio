@@ -10,7 +10,7 @@ defmodule LiveViewStudioWeb.DonationsLive do
         sort_by_links: ~w(item quantity days_until_expires)a
       )
 
-    {:ok, socket}
+    {:ok, socket, temporary_assigns: [donations: []]}
   end
 
   def handle_params(params, _uri, socket) do
