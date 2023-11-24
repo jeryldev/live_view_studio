@@ -4,6 +4,7 @@ defmodule LiveViewStudioWeb.ServersLive do
   alias LiveViewStudio.Servers
 
   def mount(_params, _session, socket) do
+    IO.inspect(self(), label: "MOUNT")
     servers = Servers.list_servers()
 
     socket =
@@ -16,15 +17,19 @@ defmodule LiveViewStudioWeb.ServersLive do
   end
 
   def handle_params(%{"id" => id}, _uri, socket) do
+    IO.inspect(self(), label: "HANDLE PARAMS ID #{id}")
     server = Servers.get_server!(id)
     {:noreply, assign(socket, selected_server: server)}
   end
 
   def handle_params(_params, _uri, socket) do
+    IO.inspect(self(), label: "HANDLE PARAMS CATCH-ALL")
     {:noreply, assign(socket, :selected_server, hd(socket.assigns.servers))}
   end
 
   def render(assigns) do
+    IO.inspect(self(), label: "RENDER")
+
     ~H"""
     <h1>Servers</h1>
     <div id="servers">
@@ -32,7 +37,7 @@ defmodule LiveViewStudioWeb.ServersLive do
         <div class="nav">
           <.link
             :for={server <- @servers}
-            href={~p"/servers?#{[id: server]}"}
+            patch={~p"/servers?#{[id: server]}"}
             class={if server == @selected_server, do: "selected"}
           >
             <span class={server.status}></span>
@@ -81,6 +86,7 @@ defmodule LiveViewStudioWeb.ServersLive do
   end
 
   def handle_event("drink", _, socket) do
+    IO.inspect(self(), label: "HANDLE EVENT DRINK")
     {:noreply, update(socket, :coffees, &(&1 + 1))}
   end
 end
