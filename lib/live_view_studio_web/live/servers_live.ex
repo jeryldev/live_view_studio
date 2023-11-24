@@ -35,14 +35,11 @@ defmodule LiveViewStudioWeb.ServersLive do
     <div id="servers">
       <div class="sidebar">
         <div class="nav">
-          <.link
+          <.server
             :for={server <- @servers}
-            patch={~p"/servers/#{server}"}
-            class={if server == @selected_server, do: "selected"}
-          >
-            <span class={server.status}></span>
-            <%= server.name %>
-          </.link>
+            server={server}
+            selected_server={@selected_server}
+          />
         </div>
         <div class="coffees">
           <button phx-click="drink">
@@ -53,37 +50,55 @@ defmodule LiveViewStudioWeb.ServersLive do
       </div>
       <div class="main">
         <div class="wrapper">
-          <div class="server">
-            <div class="header">
-              <h2><%= @selected_server.name %></h2>
-              <span class={@selected_server.status}>
-                <%= @selected_server.status %>
-              </span>
-            </div>
-            <div class="body">
-              <div class="row">
-                <span>
-                  <%= @selected_server.deploy_count %> deploys
-                </span>
-                <span>
-                  <%= @selected_server.size %> MB
-                </span>
-                <span>
-                  <%= @selected_server.framework %>
-                </span>
-              </div>
-              <h3>Last Commit Message:</h3>
-              <blockquote>
-                <%= @selected_server.last_commit_message %>
-              </blockquote>
-            </div>
-          </div>
+          <.selected_server server={@selected_server} />
           <div class="links">
             <.link navigate={~p"/light"}>
               Adjust lights
             </.link>
           </div>
         </div>
+      </div>
+    </div>
+    """
+  end
+
+  def server(assigns) do
+    ~H"""
+    <.link
+      patch={~p"/servers/#{@server}"}
+      class={if @server == @selected_server, do: "selected"}
+    >
+      <span class={@server.status}></span>
+      <%= @server.name %>
+    </.link>
+    """
+  end
+
+  def selected_server(assigns) do
+    ~H"""
+    <div class="server">
+      <div class="header">
+        <h2><%= @server.name %></h2>
+        <span class={@server.status}>
+          <%= @server.status %>
+        </span>
+      </div>
+      <div class="body">
+        <div class="row">
+          <span>
+            <%= @server.deploy_count %> deploys
+          </span>
+          <span>
+            <%= @server.size %> MB
+          </span>
+          <span>
+            <%= @server.framework %>
+          </span>
+        </div>
+        <h3>Last Commit Message:</h3>
+        <blockquote>
+          <%= @server.last_commit_message %>
+        </blockquote>
       </div>
     </div>
     """
