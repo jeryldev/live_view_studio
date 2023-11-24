@@ -4,15 +4,13 @@
     <table>
       <thead>
         <tr>
-          <th class="item">
-            Item
-          </th>
-          <th>
-            Quantity
-          </th>
-          <th>
-            Days Until Expires
-          </th>
+          <.sort_link_th
+            :for={sort_by <- @sort_by_links}
+            sort_by={sort_by}
+            options={@options}
+          >
+            <%= sort_by %>
+          </.sort_link_th>
         </tr>
       </thead>
       <tbody>
