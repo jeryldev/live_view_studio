@@ -4,24 +4,13 @@
     <table>
       <thead>
         <tr>
-          <th class="id">
-            #
-          </th>
-          <th>
-            Size
-          </th>
-          <th>
-            Style
-          </th>
-          <th>
-            Topping 1
-          </th>
-          <th>
-            Topping 2
-          </th>
-          <th>
-            Price
-          </th>
+          <.sort_link_th
+            :for={sort_by <- @sort_by_links}
+            sort_by={sort_by}
+            options={@options}
+          >
+            <%= header_map(sort_by) %>
+          </.sort_link_th>
         </tr>
       </thead>
       <tbody>
