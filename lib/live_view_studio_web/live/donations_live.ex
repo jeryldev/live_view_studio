@@ -16,8 +16,8 @@ defmodule LiveViewStudioWeb.DonationsLive do
   def handle_params(params, _uri, socket) do
     sort_by = valid_sort_by(params)
     sort_order = valid_sort_order(params)
-    page = String.to_integer(params["page"] || "1")
-    per_page = String.to_integer(params["per_page"] || "5")
+    page = params_to_integer(params["page"], 1)
+    per_page = params_to_integer(params["per_page"], 5)
 
     options = %{
       sort_by: sort_by,
@@ -88,4 +88,13 @@ defmodule LiveViewStudioWeb.DonationsLive do
   end
 
   defp sort_indicator(_column, _options), do: ""
+
+  defp params_to_integer(nil, default), do: default
+
+  defp params_to_integer(value, default) do
+    case Integer.parse(value) do
+      {integer, ""} -> integer
+      _ -> default
+    end
+  end
 end
