@@ -93,18 +93,21 @@ defmodule LiveViewStudioWeb.BoatsLive do
     """
   end
 
-  def handle_event("filter", %{"type" => type, "prices" => prices}, socket) do
-    filter = %{type: type, prices: prices}
+  def handle_params(params, _uri, socket) do
+    filter = %{
+      type: params["type"] || "",
+      prices: params["prices"] || [""]
+    }
+
     boats = Boats.list_boats(filter)
 
-    # Visualizing the temporary assigns
-    # The first one logs the number of boats that are currently assigned to the socket,
-    # thus being held in the LiveView process' memory. And the second one
-    # logs the number of boats returned by the new filter.
-    # IO.inspect(length(socket.assigns.boats), label: "Assigned boats")
-    # IO.inspect(length(boats), label: "Filtered boats")
-
     {:noreply, assign(socket, filter: filter, boats: boats)}
+  end
+
+  def handle_event("filter", %{"type" => type, "prices" => prices}, socket) do
+    params = %{type: type, prices: prices}
+
+    {:noreply, push_patch(socket, to: ~p"/boats?#{params}")}
   end
 
   defp type_options do
