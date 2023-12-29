@@ -52,6 +52,19 @@ defmodule LiveViewStudio.Donations do
   defp paginate(query, _options), do: query
 
   @doc """
+  Gets donations count.
+
+  ## Examples
+
+      iex> donation_count()
+      100
+
+  """
+  def donation_count do
+    Repo.aggregate(Donation, :count, :id)
+  end
+
+  @doc """
   Gets a single donation.
 
   Raises `Ecto.NoResultsError` if the Donation does not exist.

@@ -16,20 +16,32 @@ defmodule LiveViewStudioWeb.DonationsLive do
   def handle_params(params, _uri, socket) do
     sort_by = valid_sort_by(params)
     sort_order = valid_sort_order(params)
+    page = params_to_integer(params["page"], 1)
+    per_page = params_to_integer(params["per_page"], 5)
 
     options = %{
       sort_by: sort_by,
-      sort_order: sort_order
+      sort_order: sort_order,
+      page: page,
+      per_page: per_page
     }
 
     donations = Donations.list_donations(options)
+    donation_count = Donations.donation_count()
 
     socket =
       assign(socket,
         donations: donations,
-        options: options
+        options: options,
+        donation_count: donation_count
       )
 
+    {:noreply, socket}
+  end
+
+  def handle_event("select-per-page", %{"per-page" => per_page}, socket) do
+    params = %{socket.assigns.options | per_page: per_page}
+    socket = push_patch(socket, to: ~p"/donations?#{params}")
     {:noreply, socket}
   end
 
@@ -38,11 +50,12 @@ defmodule LiveViewStudioWeb.DonationsLive do
   slot :inner_block, required: true
 
   def sort_link_th(assigns) do
+    params = %{assigns.options | sort_by: assigns.sort_by, sort_order: assigns.options.sort_order}
+    assigns = assign(assigns, params: params)
+
     ~H"""
     <th class={[@sort_by == :item && "item"]}>
-      <.link patch={
-        ~p"/donations?#{%{sort_by: @sort_by, sort_order: @options.sort_order}}"
-      }>
+      <.link patch={~p"/donations?#{@params}"}>
         <%= render_slot(@inner_block) %>
         <%= sort_indicator(@sort_by, @options) %>
       </.link>
@@ -77,4 +90,28 @@ defmodule LiveViewStudioWeb.DonationsLive do
   end
 
   defp sort_indicator(_column, _options), do: ""
+
+  defp params_to_integer(nil, default), do: default
+
+  defp params_to_integer(value, default) do
+    case Integer.parse(value) do
+      {integer, ""} -> integer
+      _ -> default
+    end
+  end
+
+  defp more_pages?(options, donation_count) do
+    options.page * options.per_page < donation_count
+  end
+
+  defp pages(options, donation_count) do
+    page_count = ceil(donation_count / options.per_page)
+
+    for page_number <- (options.page - 2)..(options.page + 2), page_number > 0 do
+      if page_number <= page_count do
+        current_page? = page_number == options.page
+        {page_number, current_page?}
+      end
+    end
+  end
 end
