@@ -17,17 +17,24 @@ defmodule LiveViewStudioWeb.PizzaOrdersLive do
     sort_by = valid_sort_by(params)
     sort_order = valid_sort_order(params)
 
+    page = param_to_integer(params["page"], 1)
+    per_page = param_to_integer(params["per_page"], 5)
+
     options = %{
       sort_by: sort_by,
-      sort_order: sort_order
+      sort_order: sort_order,
+      page: page,
+      per_page: per_page
     }
 
     pizza_orders = PizzaOrders.list_pizza_orders(options)
+    pizza_order_count = PizzaOrders.pizza_order_count()
 
     socket =
       assign(socket,
         pizza_orders: pizza_orders,
-        options: options
+        options: options,
+        pizza_order_count: pizza_order_count
       )
 
     {:noreply, socket}
@@ -88,4 +95,24 @@ defmodule LiveViewStudioWeb.PizzaOrdersLive do
   end
 
   defp sort_indicator(_column, _options), do: ""
+
+  defp param_to_integer(nil, default), do: default
+
+  defp param_to_integer(param, default) do
+    case Integer.parse(param) do
+      {value, ""} -> value
+      _ -> default
+    end
+  end
+
+  defp pages(options, pizza_order_count) do
+    page_count = ceil(pizza_order_count / options.per_page)
+
+    for page_number <- (options.page - 2)..(options.page + 2), page_number > 0 do
+      if page_number <= page_count do
+        current_page? = page_number == options.page
+        {page_number, current_page?}
+      end
+    end
+  end
 end

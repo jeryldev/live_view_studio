@@ -36,5 +36,32 @@
         </tr>
       </tbody>
     </table>
+    <div class="footer">
+      <div class="pagination">
+        <.link
+          :if={@options.page > 1}
+          patch={
+            ~p"/pizza-orders?#{%{@options | page: @options.page - 1}}"
+          }
+        >
+          Previous
+        </.link>
+        <.link
+          :for={
+            {page_number, current_page?} <-
+              pages(@options, @pizza_order_count)
+          }
+          class={if current_page?, do: "active"}
+          patch={~p"/pizza-orders?#{%{@options | page: page_number}}"}
+        >
+          <%= page_number %>
+        </.link>
+        <.link patch={
+          ~p"/pizza-orders?#{%{@options | page: @options.page + 1}}"
+        }>
+          Next
+        </.link>
+      </div>
+    </div>
   </div>
 </div>

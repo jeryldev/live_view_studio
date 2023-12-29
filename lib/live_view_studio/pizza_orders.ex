@@ -52,6 +52,18 @@ defmodule LiveViewStudio.PizzaOrders do
   defp paginate(query, _options), do: query
 
   @doc """
+  Gets pizza orders count.
+
+  ## Examples
+
+      iex> pizza_order_count()
+      100
+  """
+  def pizza_order_count do
+    Repo.aggregate(PizzaOrder, :count, :id)
+  end
+
+  @doc """
   Gets a single pizza_order.
 
   Raises `Ecto.NoResultsError` if the Pizza order does not exist.
