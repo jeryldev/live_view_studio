@@ -2,15 +2,19 @@ defmodule LiveViewStudioWeb.ServersLive do
   use LiveViewStudioWeb, :live_view
 
   alias LiveViewStudio.Servers
+  alias LiveViewStudio.Servers.Server
 
   def mount(_params, _session, socket) do
     # IO.inspect(self(), label: "MOUNT")
     servers = Servers.list_servers()
 
+    changeset = Servers.change_server(%Server{})
+
     socket =
       assign(socket,
         servers: servers,
-        coffees: 0
+        coffees: 0,
+        form: to_form(changeset)
       )
 
     {:ok, socket}
@@ -50,6 +54,25 @@ defmodule LiveViewStudioWeb.ServersLive do
       </div>
       <div class="main">
         <div class="wrapper">
+          <.form for={@form} phx-submit="save">
+            <div class="field">
+              <.input field={@form[:name]} placeholder="Name" />
+            </div>
+            <div class="field">
+              <.input field={@form[:framework]} placeholder="Framework" />
+            </div>
+            <div class="field">
+              <.input
+                field={@form[:size]}
+                placeholder="Size (MB)"
+                type="number"
+              />
+            </div>
+            <.button phx-disable-with="Saving...">
+              Save
+            </.button>
+          </.form>
+
           <.selected_server server={@selected_server} />
           <div class="links">
             <.link navigate={~p"/light"}>
@@ -107,5 +130,19 @@ defmodule LiveViewStudioWeb.ServersLive do
   def handle_event("drink", _, socket) do
     # IO.inspect(self(), label: "HANDLE EVENT DRINK")
     {:noreply, update(socket, :coffees, &(&1 + 1))}
+  end
+
+  def handle_event("save", %{"server" => server_params}, socket) do
+    case Servers.create_server(server_params) do
+      {:ok, server} ->
+        socket = update(socket, :servers, fn servers -> [server | servers] end)
+
+        changeset = Servers.change_server(%Server{})
+
+        {:noreply, assign(socket, :form, to_form(changeset))}
+
+      {:error, changeset} ->
+        {:noreply, assign(socket, :form, to_form(changeset))}
+    end
   end
 end
