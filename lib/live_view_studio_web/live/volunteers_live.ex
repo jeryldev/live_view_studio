@@ -39,7 +39,7 @@ defmodule LiveViewStudioWeb.VolunteersLive do
         <.button phx-disable-with="Saving...">Check In</.button>
       </.form>
       <pre>
-        <%= inspect(@form, pretty: true) %>
+        <%#= inspect(@form, pretty: true) %>
       </pre>
       <div
         :for={volunteer <- @volunteers}
