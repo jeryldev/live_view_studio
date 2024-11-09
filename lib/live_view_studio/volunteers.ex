@@ -101,4 +101,16 @@ defmodule LiveViewStudio.Volunteers do
   def change_volunteer(%Volunteer{} = volunteer, attrs \\ %{}) do
     Volunteer.changeset(volunteer, attrs)
   end
+
+  @doc """
+  Updates the checked out status of a volunteer.
+
+  ## Examples
+
+      iex> toggle_status_volunteer(volunteer)
+      {:ok, %Volunteer{}}
+  """
+  def toggle_status_volunteer(%Volunteer{} = volunteer) do
+    update_volunteer(volunteer, %{checked_out: !volunteer.checked_out})
+  end
 end
