@@ -65,6 +65,15 @@ defmodule LiveViewStudioWeb.VolunteersLive do
     """
   end
 
+  def handle_event("validate", %{"volunteer" => volunteer_params}, socket) do
+    changeset =
+      %Volunteer{}
+      |> Volunteers.change_volunteer(volunteer_params)
+      |> Map.put(:action, :validate)
+
+    {:noreply, assign(socket, :form, to_form(changeset))}
+  end
+
   def handle_event("save", %{"volunteer" => volunteer_params}, socket) do
     case Volunteers.create_volunteer(volunteer_params) do
       {:ok, volunteer} ->
@@ -80,14 +89,5 @@ defmodule LiveViewStudioWeb.VolunteersLive do
       {:error, changeset} ->
         {:noreply, assign(socket, :form, to_form(changeset))}
     end
-  end
-
-  def handle_event("validate", %{"volunteer" => volunteer_params}, socket) do
-    changeset =
-      %Volunteer{}
-      |> Volunteers.change_volunteer(volunteer_params)
-      |> Map.put(:action, :validate)
-
-    {:noreply, assign(socket, :form, to_form(changeset))}
   end
 end
