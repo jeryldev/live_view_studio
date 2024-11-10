@@ -83,7 +83,10 @@ defmodule LiveViewStudioWeb.VolunteersLive do
 
     {:ok, _} = Volunteers.delete_volunteer(volunteer)
 
-    {:noreply, stream_delete(socket, :volunteers, volunteer)}
+    {:noreply,
+     socket
+     |> stream_delete(:volunteers, volunteer)
+     |> update(:count, &(&1 - 1))}
   end
 
   def handle_event("toggle-status", %{"id" => id}, socket) do
