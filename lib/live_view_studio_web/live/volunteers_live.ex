@@ -4,7 +4,14 @@ defmodule LiveViewStudioWeb.VolunteersLive do
   alias LiveViewStudio.Volunteers
 
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :volunteers, Volunteers.list_volunteers())}
+    volunteers = Volunteers.list_volunteers()
+
+    socket =
+      socket
+      |> stream(:volunteers, volunteers)
+      |> assign(:count, length(volunteers))
+
+    {:ok, socket}
   end
 
   def render(assigns) do
@@ -14,6 +21,7 @@ defmodule LiveViewStudioWeb.VolunteersLive do
       <.live_component
         module={LiveViewStudioWeb.VolunteerFormComponent}
         id={:new}
+        count={@count}
       />
       <pre>
         <%#= inspect(@form, pretty: true) %>
@@ -61,7 +69,10 @@ defmodule LiveViewStudioWeb.VolunteersLive do
   end
 
   def handle_info({:volunteer_created, volunteer}, socket) do
-    {:noreply, stream_insert(socket, :volunteers, volunteer, at: 0)}
+    {:noreply,
+     socket
+     |> stream_insert(:volunteers, volunteer, at: 0)
+     |> update(:count, &(&1 + 1))}
   end
 
   def handle_event("delete", %{"id" => id}, socket) do
