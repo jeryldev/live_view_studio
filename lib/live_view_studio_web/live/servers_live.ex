@@ -58,12 +58,12 @@ defmodule LiveViewStudioWeb.ServersLive do
             selected_server={@selected_server}
           />
         </div>
-        <div class="coffees">
+        <%!-- <div class="coffees">
           <button phx-click="drink">
             <img src="/images/coffee.svg" />
             <%= @coffees %>
           </button>
-        </div>
+        </div> --%>
       </div>
       <div class="main">
         <div class="wrapper">
@@ -101,11 +101,11 @@ defmodule LiveViewStudioWeb.ServersLive do
           <% else %>
             <.selected_server server={@selected_server} />
           <% end %>
-          <div class="links">
+          <%!-- <div class="links">
             <.link navigate={~p"/light"}>
               Adjust lights
             </.link>
-          </div>
+          </div> --%>
         </div>
       </div>
     </div>
