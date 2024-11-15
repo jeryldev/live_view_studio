@@ -79,6 +79,14 @@ defmodule LiveViewStudio.Volunteers do
     volunteer
     |> Volunteer.changeset(attrs)
     |> Repo.update()
+    |> case do
+      {:ok, volunteer} ->
+        broadcast({:volunteer_updated, volunteer})
+        {:ok, volunteer}
+
+      error ->
+        error
+    end
   end
 
   @doc """
