@@ -72,10 +72,7 @@ defmodule LiveViewStudioWeb.VolunteersLive do
     """
   end
 
-  def handle_info(
-        {LiveViewStudioWeb.VolunteerFormComponent, :volunteer_created, volunteer},
-        socket
-      ) do
+  def handle_info({:volunteer_created, volunteer}, socket) do
     {:noreply,
      socket
      |> stream_insert(:volunteers, volunteer, at: 0)
