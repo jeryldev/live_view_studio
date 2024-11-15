@@ -102,7 +102,16 @@ defmodule LiveViewStudio.Volunteers do
 
   """
   def delete_volunteer(%Volunteer{} = volunteer) do
-    Repo.delete(volunteer)
+    volunteer
+    |> Repo.delete()
+    |> case do
+      {:ok, volunteer} ->
+        broadcast({:volunteer_deleted, volunteer})
+        {:ok, volunteer}
+
+      error ->
+        error
+    end
   end
 
   @doc """
