@@ -53,14 +53,7 @@ defmodule LiveViewStudio.Volunteers do
     %Volunteer{}
     |> Volunteer.changeset(attrs)
     |> Repo.insert()
-    |> case do
-      {:ok, volunteer} ->
-        broadcast({:volunteer_created, volunteer})
-        {:ok, volunteer}
-
-      error ->
-        error
-    end
+    |> broadcast(:volunteer_created)
   end
 
   @doc """
@@ -79,14 +72,7 @@ defmodule LiveViewStudio.Volunteers do
     volunteer
     |> Volunteer.changeset(attrs)
     |> Repo.update()
-    |> case do
-      {:ok, volunteer} ->
-        broadcast({:volunteer_updated, volunteer})
-        {:ok, volunteer}
-
-      error ->
-        error
-    end
+    |> broadcast(:volunteer_updated)
   end
 
   @doc """
@@ -104,14 +90,7 @@ defmodule LiveViewStudio.Volunteers do
   def delete_volunteer(%Volunteer{} = volunteer) do
     volunteer
     |> Repo.delete()
-    |> case do
-      {:ok, volunteer} ->
-        broadcast({:volunteer_deleted, volunteer})
-        {:ok, volunteer}
-
-      error ->
-        error
-    end
+    |> broadcast(:volunteer_deleted)
   end
 
   @doc """
@@ -142,16 +121,32 @@ defmodule LiveViewStudio.Volunteers do
   @doc """
   Subscribe to volunteers topic PubSub
 
-  ## Examples:
+  ## Examples
 
       iex> subscribe()
       :ok
+
   """
   def subscribe do
     Phoenix.PubSub.subscribe(LiveViewStudio.PubSub, "volunteers")
   end
 
-  def broadcast(message) do
-    Phoenix.PubSub.broadcast(LiveViewStudio.PubSub, "volunteers", message)
+  @doc """
+  Broadcast message to volunteers pubsub subscribers. Returns the volunteer or the error.
+
+  ## Examples
+
+      iex> broadcast({:ok, volunteer}, :volunteer_created)
+      {:ok, %Volunteer{}}
+
+      iex> broadcast({:error, %Ecto.Changeset{}}, :volunteer_created)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def broadcast({:ok, volunteer}, tag) do
+    Phoenix.PubSub.broadcast(LiveViewStudio.PubSub, "volunteers", {tag, volunteer})
+    {:ok, volunteer}
   end
+
+  def broadcast({:error, _changeset} = error, _tag), do: error
 end
