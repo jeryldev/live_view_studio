@@ -53,6 +53,14 @@ defmodule LiveViewStudio.Volunteers do
     %Volunteer{}
     |> Volunteer.changeset(attrs)
     |> Repo.insert()
+    |> case do
+      {:ok, volunteer} ->
+        broadcast({:volunteer_created, volunteer})
+        {:ok, volunteer}
+
+      error ->
+        error
+    end
   end
 
   @doc """
@@ -112,5 +120,21 @@ defmodule LiveViewStudio.Volunteers do
   """
   def toggle_status_volunteer(%Volunteer{} = volunteer) do
     update_volunteer(volunteer, %{checked_out: !volunteer.checked_out})
+  end
+
+  @doc """
+  Subscribe to volunteers topic PubSub
+
+  ## Examples:
+
+      iex> subscribe()
+      :ok
+  """
+  def subscribe do
+    Phoenix.PubSub.subscribe(LiveViewStudio.PubSub, "volunteers")
+  end
+
+  def broadcast(message) do
+    Phoenix.PubSub.broadcast(LiveViewStudio.PubSub, "volunteers", message)
   end
 end
