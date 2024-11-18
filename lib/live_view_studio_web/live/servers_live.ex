@@ -72,11 +72,14 @@ defmodule LiveViewStudioWeb.ServersLive do
           <% else %>
             <.selected_server server={@selected_server} />
           <% end %>
-          <%!-- <div class="links">
+          <div class="links">
+            <.link navigate={~p"/topsecret"}>
+              Top Secret
+            </.link>
             <.link navigate={~p"/light"}>
               Adjust lights
             </.link>
-          </div> --%>
+          </div>
         </div>
       </div>
     </div>
