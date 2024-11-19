@@ -9,6 +9,8 @@ defmodule LiveViewStudioWeb.PresenceLive do
     %{current_user: current_user} = socket.assigns
 
     if connected?(socket) do
+      Phoenix.PubSub.subscribe(LiveViewStudio.PubSub, @topic)
+
       {:ok, _} =
         Presence.track(self(), @topic, current_user.id, %{
           username: current_user.email |> String.split("@") |> hd(),
@@ -35,7 +37,7 @@ defmodule LiveViewStudioWeb.PresenceLive do
       <div class="users">
         <h2>Who's Here?</h2>
         <ul>
-          <li :for={{user_id, meta} <- @presences}>
+          <li :for={{_user_id, meta} <- @presences}>
             <span class="status">
               <%= if meta.is_playing, do: "👀", else: "🙈" %>
             </span>
@@ -56,12 +58,35 @@ defmodule LiveViewStudioWeb.PresenceLive do
     """
   end
 
+  def handle_info(%{event: "presence_diff", payload: diff}, socket) do
+    socket =
+      socket
+      |> remove_presences(diff.leaves)
+      |> add_presences(diff.joins)
+
+    {:noreply, socket}
+  end
+
   def handle_event("toggle-playing", _, socket) do
     socket = update(socket, :is_playing, fn playing -> !playing end)
     {:noreply, socket}
   end
 
-  def simple_presence_map(presences) do
+  defp simple_presence_map(presences) do
     Enum.into(presences, %{}, fn {user_id, %{metas: [meta | _]}} -> {user_id, meta} end)
+  end
+
+  defp remove_presences(socket, leaves) do
+    user_ids = Enum.map(leaves, fn {user_id, _} -> user_id end)
+
+    presences = Map.drop(socket.assigns.presences, user_ids)
+
+    assign(socket, :presences, presences)
+  end
+
+  defp add_presences(socket, joins) do
+    presences = Map.merge(socket.assigns.presences, simple_presence_map(joins))
+
+    assign(socket, :presences, presences)
   end
 end
