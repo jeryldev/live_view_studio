@@ -30,9 +30,6 @@ defmodule LiveViewStudioWeb.PresenceLive do
 
   def render(assigns) do
     ~H"""
-    <pre>
-      <%#= inspect(@presences, pretty: true) %>
-    </pre>
     <div id="presence">
       <div class="users">
         <h2>Who's Here?</h2>
