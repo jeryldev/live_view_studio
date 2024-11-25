@@ -32,4 +32,10 @@ defmodule LiveViewStudioWeb.ShopLive do
       out: "fade-out"
     )
   end
+
+  def add_product(product, js \\ %JS{}) do
+    js
+    |> JS.push("add-product", value: %{product: product.image})
+    |> JS.transition("shake", to: "#cart-button", time: 500)
+  end
 end
