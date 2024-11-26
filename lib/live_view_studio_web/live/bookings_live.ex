@@ -55,6 +55,7 @@ defmodule LiveViewStudioWeb.BookingsLive do
       socket
       |> assign(:bookings, [selected_dates | bookings])
       |> assign(:selected_dates, nil)
+      |> push_event("add-unavailable-dates", selected_dates)
 
     {:noreply, socket}
   end
@@ -79,6 +80,12 @@ defmodule LiveViewStudioWeb.BookingsLive do
   end
 
   def parse_date(date_string) do
-    date_string |> Timex.parse!("{ISO:Extended}") |> Timex.to_date()
+    date_string
+    |> Timex.parse!("{ISO:Extended}")
+    |> Timex.to_datetime()
+    # Set to beginning of day
+    |> Timex.beginning_of_day()
+    |> Timex.Timezone.convert("Etc/UTC")
+    |> Timex.to_date()
   end
 end

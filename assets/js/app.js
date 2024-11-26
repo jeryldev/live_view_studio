@@ -33,10 +33,25 @@ Hooks.Calendar = {
       mode: "range",
       showMonths: 2,
       disable: JSON.parse(this.el.dataset.unavailableDates),
+      dateFormat: "Y-m-d",
       onChange: (selectedDates) => {
         if (selectedDates.length != 2) return;
-        this.pushEvent("dates-picked", selectedDates)
+
+        // Create dates at the start of the day in UTC
+        const formattedDates = selectedDates.map(date => {
+          return new Date(Date.UTC(
+            date.getFullYear(),
+            date.getMonth(),
+            date.getDate(),
+            0, 0, 0
+          )).toISOString();
+        });
+
+        this.pushEvent("dates-picked", formattedDates)
       }
+    })
+    this.handleEvent("add-unavailable-dates", (dates) => {
+      this.pickr.set("disable", [dates, ...this.pickr.config.disable])
     })
   },
 
