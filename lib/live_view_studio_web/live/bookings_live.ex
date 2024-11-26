@@ -81,10 +81,7 @@ defmodule LiveViewStudioWeb.BookingsLive do
   def parse_date(date_string) do
     date_string
     |> Timex.parse!("{ISO:Extended}")
-    |> Timex.to_datetime()
-    # Set to beginning of day
-    |> Timex.beginning_of_day()
-    |> Timex.Timezone.convert("Etc/UTC")
+    |> Timex.Timezone.convert(:local)
     |> Timex.to_date()
   end
 end

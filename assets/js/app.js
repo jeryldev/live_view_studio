@@ -32,21 +32,12 @@ Hooks.Calendar = {
       inline: true,
       mode: "range",
       showMonths: 2,
-      dateFormat: "Y-m-d",
       onChange: (selectedDates) => {
         if (selectedDates.length != 2) return;
 
-        // Create dates at the start of the day in UTC
-        const formattedDates = selectedDates.map(date => {
-          return new Date(Date.UTC(
-            date.getFullYear(),
-            date.getMonth(),
-            date.getDate(),
-            0, 0, 0
-          )).toISOString();
-        });
+        selectedDates = selectedDates.map(date => this.utcStartOfDay(date))
 
-        this.pushEvent("dates-picked", formattedDates)
+        this.pushEvent("dates-picked", selectedDates)
       }
     })
 
@@ -61,6 +52,17 @@ Hooks.Calendar = {
 
   destroyed() {
     this.pickr.destroy()
+  },
+
+  utcStartOfDay(date) {
+    const newDate = new Date(date)
+    // important to set it in descending order, smaller time units
+    // can shift bigger ones, if those are not already set in UTC.
+    newDate.setUTCFullYear(date.getFullYear())
+    newDate.setUTCMonth(date.getMonth())
+    newDate.setUTCDate(date.getDate())
+    newDate.setUTCHours(0, 0, 0, 0)
+    return newDate
   }
 }
 
