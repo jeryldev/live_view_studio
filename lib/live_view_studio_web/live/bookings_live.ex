@@ -5,6 +5,14 @@ defmodule LiveViewStudioWeb.BookingsLive do
   import Number.Currency
 
   def mount(_params, _session, socket) do
+    socket =
+      if connected?(socket) do
+        %{"timezone" => tz} = get_connect_params(socket)
+        assign(socket, :timezone, tz)
+      else
+        socket
+      end
+
     {:ok,
      assign(socket,
        bookings: Bookings.list_bookings(),

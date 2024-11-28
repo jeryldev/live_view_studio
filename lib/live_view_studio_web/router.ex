@@ -21,7 +21,10 @@ defmodule LiveViewStudioWeb.Router do
     pipe_through [:browser, :require_authenticated_user]
 
     live_session :authenticated,
-      on_mount: [{LiveViewStudioWeb.UserAuth, :ensure_authenticated}] do
+      on_mount: [
+        {LiveViewStudioWeb.UserAuth, :ensure_authenticated},
+        {LiveViewStudioWeb.Timezone, :timezone}
+      ] do
       live "/topsecret", TopSecretLive
       live "/bingo", BingoLive
       live "/presence", PresenceLive

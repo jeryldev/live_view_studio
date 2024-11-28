@@ -26,8 +26,10 @@ import Hooks from "./hooks"
 let csrfToken =
   document.querySelector("meta[name='csrf-token']").getAttribute("content")
 
+const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+
 let liveSocket = new LiveSocket("/live", Socket, {
-  params: { _csrf_token: csrfToken },
+  params: { _csrf_token: csrfToken, timezone: timezone },
   hooks: Hooks
 });
 
